@@ -1,67 +1,68 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+'use client';
 
-export default function Home() {
+import mobileStyles from '../styles/Home.mobile.module.scss';
+import pcStyles from '../styles/Home.module.scss';
+import { useState } from 'react';
+import { Box, Skeleton, Snackbar, Alert, CloseIcon, IconButton } from '@mui/material';
+
+import { useQuery } from '@tanstack/react-query';
+import useMediaQueryStyles from '../hooks/useMediaQueryStyles';
+import Display from '../components/Profile/Display';
+import Edit from '../components/Profile/Edit';
+
+const Home = () => {
+  const styles = useMediaQueryStyles(mobileStyles, pcStyles);
+  const query = useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => {
+      setLoading(true);
+      try {
+        const result = await fetch('/api/profile').then(res => res.json());
+        // Mock for display skeleton
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        return result;
+      } catch (err) {
+        setError('There is something wrong. Please try again later.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    },
+  });
+
+  const [error, setError] = useState(undefined);
+  const [loading, setLoading] = useState(true);
+  const [isEdit, setIsEdit] = useState(false);
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Box className={styles.container}>
+      <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError(undefined)}>
+        <Alert
+          severity="error"
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setError(undefined);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
         >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
-    </div>
-  )
-}
+          {error}
+        </Alert>
+      </Snackbar>
+      <Box className={styles.fields}>
+        {isEdit ? (
+          <Edit user={query?.data} onDisplay={() => setIsEdit(false)} />
+        ) : (
+          <Display loading={loading} user={query?.data} onEdit={() => setIsEdit(true)} />
+        )}
+      </Box>
+    </Box>
+  );
+};
+export default Home;

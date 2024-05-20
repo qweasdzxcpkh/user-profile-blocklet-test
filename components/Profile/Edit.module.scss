@@ -1,0 +1,13 @@
+.container {
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    .Avatar {
+      margin: 0 auto;
+      width: 200px;
+      height: 200px;
+      font-size: 100px;
+    }
+  }
+}

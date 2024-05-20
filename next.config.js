@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 
+const path = require('path');
+
 const whenDev = process.env.NODE_ENV === 'development';
 
 const getDevNextConfig = () => {
@@ -21,6 +23,9 @@ const getDevNextConfig = () => {
 
 const nextConfig = {
   reactStrictMode: false,
+  sassOptions: {
+    includePaths: [path.join(__dirname, 'styles')],
+  },
   ...getDevNextConfig(),
 };
 

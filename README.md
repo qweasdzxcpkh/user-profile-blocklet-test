@@ -1,9 +1,3 @@
-# Getting Started with Create Blocklet
-
-This project was bootstrapped with [Create Blocklet](https://github.com/blocklet/create-blocklet).
-
-This blocklet is a dapp project, which means this is a full-stack application. It's contained both `api` and `client` code.
-
 ## File Structure
 
 - public/ - static files
@@ -34,6 +28,8 @@ This blocklet is a dapp project, which means this is a full-stack application. I
 
 ## Development
 
+0. Ensure using node ^18.14
+
 1. Make sure you have [@blocklet/cli](https://www.npmjs.com/package/@blocklet/cli) installed
 
    Blocklet needs blocklet server as a dependency. So you need to install it first.
@@ -49,7 +45,8 @@ This blocklet is a dapp project, which means this is a full-stack application. I
 
 3. Go to the project directory `cd [name]`
 4. Install dependencies: `npm install` or `yarn`
-5. Start development server: `blocklet dev`
+5. Seed mock data to database: `npm run seed`
+6. Start development server: `blocklet dev`
 
 ## Bundle
 
